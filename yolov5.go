@@ -26,8 +26,8 @@ const (
 	DefaultInputWidth  = 640
 	DefaultInputHeight = 640
 
-	DefaultConfThreshold float32 = 0.5
-	DefaultNMSThreshold  float32 = 0.4
+	DefaultConfThreshold float32 = 0.4
+	DefaultNMSThreshold  float32 = 0.5
 )
 
 // Config can be used to customise the settings of the neural network used for object detection.
@@ -68,8 +68,8 @@ func DefaultConfig() Config {
 		InputHeight:         DefaultInputHeight,
 		ConfidenceThreshold: DefaultConfThreshold,
 		NMSThreshold:        DefaultNMSThreshold,
-		NetTargetType:       gocv.NetTargetCPU,
-		NetBackendType:      gocv.NetBackendDefault,
+		NetTargetType:       gocv.NetTargetCUDA,
+		NetBackendType:      gocv.NetBackendCUDA,
 		NewNet:              initializeNet,
 	}
 }
@@ -231,9 +231,9 @@ func (y *yoloNet) processOutputs(frame gocv.Mat, outputs []gocv.Mat, filter map[
 	if len(bboxes) == 0 {
 		return detections, nil
 	}
-	indices := make([]int, len(bboxes))
+	//indices := make([]int, len(bboxes))
 
-	gocv.NMSBoxes(bboxes, confidences, y.confidenceThreshold, y.DefaultNMSThreshold, indices)
+	indices := gocv.NMSBoxes(bboxes, confidences, y.confidenceThreshold, y.DefaultNMSThreshold)
 	result := []ObjectDetection{}
 	for i, indice := range indices {
 		// If we encounter value 0 skip the detection
