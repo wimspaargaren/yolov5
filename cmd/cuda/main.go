@@ -1,3 +1,4 @@
+// Package main contains an example on how yo run yolov5 with CUDA.
 package main
 
 import (
@@ -59,7 +60,7 @@ func main() {
 			frame := orgFrame.Clone()
 			detections, err := yolonet.GetDetections(frame)
 			if err != nil {
-				err = fmt.Errorf("%w %s", err, frame.Close())
+				err = fmt.Errorf("%w %w", err, frame.Close())
 				log.WithError(err).Fatal("unable to retrieve predictions")
 				continue
 			}
